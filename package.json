@@ -5,13 +5,23 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "devserver": "nodemon --watch server server/index.js ",
+    "startdev": "concurrently \"yarn serve\" \"yarn devserver\" "
   },
   "dependencies": {
+    "bulma": "^0.9.2",
+    "chartist": "^0.11.4",
+    "chartist-plugin-pointlabels": "^0.0.6",
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "nanoid": "^3.1.22",
     "register-service-worker": "^1.7.1",
+    "sharp": "^0.28.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "vue2-dropzone": "^3.6.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
