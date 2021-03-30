@@ -10,7 +10,7 @@
     <section class="section">
       <div class="container">
         <div
-          class="columns is-multiline box"
+          class="columns is-multiline box images-container"
           v-for="response in responses"
           :key="response.key"
         >
@@ -69,3 +69,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.images-container {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #aaa;
+}
+</style>
