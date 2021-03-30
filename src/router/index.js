@@ -6,19 +6,28 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/formats',
     name: 'Formats',
     component: Formats,
   },
-  //
-  //{
-  //  path: '/about',
-  //  name: 'About',
-  // route level code-splitting
-  // this generates a separate chunk (about.[hash].js) for this route
-  // which is lazy-loaded when the route is visited.
-  //  component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  //}
+  {
+    path: '/resize',
+    name: 'Resize',
+    component: () =>
+      import(/* webpackChunkName: "resize" */ '../views/Resize.vue'),
+  },
+  {
+    path: '/gifwebp',
+    name: 'GifWebp',
+    component: () =>
+      import(/* webpackChunkName: "gifwebp" */ '../views/GifWebp.vue'),
+  },
+  {
+    path: '/operations',
+    name: 'Operations',
+    component: () =>
+      import(/* webpackChunkName: "operations" */ '../views/Operations.vue'),
+  },
 ]
 
 const router = new VueRouter({

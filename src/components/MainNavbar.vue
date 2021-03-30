@@ -27,16 +27,9 @@
       <!-- navbar start, navbar end -->
       <div class="navbar-start">
         <navbar-item to="/formats" label="Formatos" />
-        <router-link class="navbar-item" to="/gifs"> Gifs </router-link>
-        <router-link class="navbar-item" to="/resize"> Resize </router-link>
-        <router-link class="navbar-item" to="/composition">
-          Composition
-        </router-link>
-        <router-link class="navbar-item" to="/operations">
-          Operations
-        </router-link>
-        <router-link class="navbar-item" to="/color"> Color </router-link>
-        <router-link class="navbar-item" to="/mix"> Create </router-link>
+        <navbar-item to="/resize" label="Resize" />
+        <navbar-item to="/gifwebp" label="Gif vs Webp" />
+        <navbar-item to="/operations" label="Operaciones" />
       </div>
       <div class="navbar-end">
         <!-- navbar items -->
