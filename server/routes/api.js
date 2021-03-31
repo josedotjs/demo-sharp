@@ -281,4 +281,36 @@ router.post('/composition', upload.single('file'), async (req, res, next) => {
   }
 })
 
+router.post('/colors', upload.single('file'), async (req, res, next) => {
+  const timestamp = +new Date()
+  const variants = [
+    {
+      color: 'red',
+      filepath: path.join(paths.images, `${timestamp}_r.png`),
+    },
+    {
+      color: 'green',
+      filepath: path.join(paths.images, `${timestamp}_g.png`),
+    },
+    {
+      color: 'blue',
+      filepath: path.join(paths.images, `${timestamp}_b.png`),
+    },
+  ]
+  try {
+    const commands = variants.map((variant) => {
+      return sharp(req.file.path)
+        .tint(variant.color)
+        .toFile(path.join(variant.filepath))
+    })
+    await Promise.all(commands)
+    const generatedFiles = variants.map((variant) =>
+      path.basename(variant.filepath)
+    )
+    res.status(200).json(generatedFiles)
+  } catch (e) {
+    next(e)
+  }
+})
+
 module.exports = router

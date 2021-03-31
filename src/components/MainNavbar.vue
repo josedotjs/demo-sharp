@@ -23,6 +23,7 @@
         <navbar-item to="/gifwebp" label="Gif vs Webp" />
         <navbar-item to="/operations" label="Operaciones" />
         <navbar-item to="/composition" label="Composition" />
+        <navbar-item to="/colors" label="Colors" />
         <!-- 
         <navbar-item to="/operations" label="Operaciones" />
         -->
