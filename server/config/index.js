@@ -4,6 +4,7 @@ const publicPath = path.join(__dirname, '../public')
 module.exports = {
   paths: {
     images: path.join(publicPath, '/images'),
+    public: publicPath,
   },
   formats: ['jpg', 'webp', 'png', 'tiff'],
   operations: [

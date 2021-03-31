@@ -6,6 +6,8 @@ const path = require('path')
 const { nanoid } = require('nanoid')
 const color = require('color')
 const fs = require('fs')
+const TextToSVG = require('text-to-svg')
+const textToSVG = TextToSVG.loadSync()
 
 const storage = multer.diskStorage({
   destination: paths.images,
@@ -163,6 +165,120 @@ router.post('/operations', upload.single('file'), (req, res, next) => {
       res.status(200).json(response)
     })
     .catch((e) => next(e))
+})
+
+/**
+ * Para determinar el tamaño que va a tener la marca de agua
+ * si fitToDest es verdadero deberemos cambiar el tamaño para
+ * que coincida con la imagen original
+ */
+const setWatermarkSize = (req, metadatas) => {
+  let width = 0
+  let height = 0
+  if (req.body && req.body.fitToDest === 'true') {
+    width = metadatas[0].width
+    height = metadatas[0].height
+  } else {
+    width = Math.min(metadatas[0].width, metadatas[1].width)
+    height = Math.min(metadatas[0].height, metadatas[1].height)
+  }
+  return {
+    width,
+    height,
+  }
+}
+
+const mustChangeSvgSize = (fileInputMetadata, textSvgMetadata) => {
+  return (
+    textSvgMetadata.width > fileInputMetadata.width ||
+    textSvgMetadata.height > fileInputMetadata.height
+  )
+}
+
+router.post('/composition', upload.single('file'), async (req, res, next) => {
+  console.log('body', req.body)
+
+  const pathFileWaterMark = path.join(paths.public, req.body.waterMarkFileName)
+  const metadatas = await Promise.all([
+    sharp(req.file.path).metadata(),
+    sharp(pathFileWaterMark).metadata(),
+  ])
+  const fileInputMetadata = metadatas[0]
+  // const watermarkMetadata = metadatas[1]
+
+  const { width, height } = setWatermarkSize(req, metadatas)
+  try {
+    const watermarkImageBuffer = await sharp(pathFileWaterMark)
+      .resize({
+        width,
+        height,
+        fit: 'cover',
+      })
+      .toBuffer()
+    /*
+    let textWidth = Math.min(
+      Math.floor(req.body.text.trim().length * 24),
+      metadatas[0].width
+    )
+    textWidth -= 50
+    console.log('textwidth', textWidth)
+    const bufferTexto = new Buffer.from(`<svg>
+        <rect x="0" y="0" width="${textWidth}" height="100" fill="rgba(0,0,0,0)"  text-align="center" />
+        <text x="10" y="76" font-size="48" fill="${escapeHtml.safe(
+          req.body.textColor
+        )}" font-family = "Impact" 
+        style="fill-opacity:1;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;">
+        ${escapeHtml.safe(req.body.text)}
+        </text>
+        </svg>`)
+    */
+    const attributes = { fill: req.body.textColor, stroke: 'black' }
+    const options = {
+      x: 0,
+      y: 0,
+      fontSize: Number(req.body.textSize),
+      anchor: 'top',
+      attributes: attributes,
+    }
+    const svgText = textToSVG.getSVG(req.body.text.trim(), options)
+    let svgBuffer = new Buffer.from(svgText)
+    const bufferMetadata = await sharp(svgBuffer).metadata()
+
+    if (mustChangeSvgSize(fileInputMetadata, bufferMetadata)) {
+      if (bufferMetadata.width > fileInputMetadata.width) {
+        svgBuffer = await sharp(svgBuffer)
+          .resize({
+            width: fileInputMetadata.width - 10,
+          })
+          .toBuffer()
+      } else {
+        svgBuffer = await sharp(svgBuffer)
+          .resize({
+            height: fileInputMetadata.height - 10,
+          })
+          .toBuffer()
+      }
+    }
+
+    const destFile = path.join(paths.images, `${+new Date()}.webp`)
+    await sharp(req.file.path)
+      .composite([
+        {
+          input: watermarkImageBuffer,
+          tile: req.body.tile === 'true',
+          gravity: req.body.watermarkLocation,
+        },
+        {
+          input: svgBuffer,
+          gravity: req.body.textLocation,
+        },
+      ])
+      .toFile(destFile)
+
+    res.status(200).json(path.basename(destFile))
+  } catch (e) {
+    next(e)
+  }
 })
 
 module.exports = router

@@ -2,14 +2,6 @@
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <!-- navbar items, navbar burger... -->
-      <router-link class="navbar-item" to="/">
-        <img
-          src="https://beerjscba.com/statics/images/logo.1574320377158.svg"
-          alt="Beerjs Córdoba"
-          height="28"
-        />
-        <span style="margin-left: 0.5rem"><b>BeerjsCba</b></span>
-      </router-link>
 
       <a
         role="button"
@@ -30,6 +22,10 @@
         <navbar-item to="/resize" label="Resize" />
         <navbar-item to="/gifwebp" label="Gif vs Webp" />
         <navbar-item to="/operations" label="Operaciones" />
+        <navbar-item to="/composition" label="Composition" />
+        <!-- 
+        <navbar-item to="/operations" label="Operaciones" />
+        -->
       </div>
       <div class="navbar-end">
         <!-- navbar items -->
